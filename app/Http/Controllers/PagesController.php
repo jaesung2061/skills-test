@@ -10,13 +10,13 @@ class PagesController extends Controller
             return ends_with($filename, '.json');
         });
 
-        $products = array_map(function ($fileName) {
+        $products = collect(array_map(function ($fileName) {
             $fileContents = \File::get(storage_path("app/$fileName"));
 
             return json_decode($fileContents, true);
-        }, $productFileNames);
+        }, $productFileNames));
 
-//        dd($products);
+        $products = $products->sortBy('created_at');
 
         return view('home', compact('products'));
     }
