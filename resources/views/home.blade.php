@@ -5,11 +5,17 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xs-12 col-sm-10 col-lg-8">
-                    <div class="card">
+                    <div class="card mb-3">
                         <div class="card-header">
                             Add new product
                         </div>
                         <div class="card-body">
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
                             <form action="/products" method="post">
                                 @csrf
 
@@ -25,10 +31,10 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="price" class="col-xs-12 col-sm-3 col-lg-3 text-sm-right">Product Price</label>
+                                    <label for="price" class="col-xs-12 col-sm-3 col-lg-3 text-sm-right">Price Per Item</label>
 
                                     <div class="col-xs-12 col-sm-9 col-lg-9">
-                                        <input type="number" class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" name="price" id="price" placeholder="Product Price" value="{{ old('price') }}">
+                                        <input type="number" class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }}" name="price" id="price" placeholder="Price Per Item" value="{{ old('price') }}">
                                         @if($errors->has('price'))
                                             <div class="invalid-feedback">{{ $errors->first('price') }}</div>
                                         @endif
@@ -46,10 +52,41 @@
                                     </div>
                                 </div>
 
+                                <hr>
 
+                                <div class="text-right">
+                                    <button class="btn btn-primary">Create Product</button>
+                                </div>
                             </form>
                         </div>
                     </div>
+
+                    @if(count($products) > 0)
+                        <div class="products-container">
+                            <h2 class="mb-3">Products</h2>
+
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Product name</th>
+                                    <th class="text-right">Quantity in stock</th>
+                                    <th class="text-right">Price per item</th>
+                                    <th>Datetime submitted</th>
+                                    <th class="text-right">Total value</th>
+                                </tr>
+                                </thead>
+                                @foreach($products as $product)
+                                    <tr>
+                                        <td>{{ $product['name'] }}</td>
+                                        <td class="text-right">{{ $product['quantity'] }}</td>
+                                        <td class="text-right">${{ money_format('%i', $product['price']) }}</td>
+                                        <td>{{ $product['created_at'] }}</td>
+                                        <td class="text-right">${{ money_format('%i', $product['quantity'] * $product['price']) }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
