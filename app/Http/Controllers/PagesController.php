@@ -6,6 +6,17 @@ class PagesController extends Controller
 {
     public function home()
     {
+        $products = $this->getProducts();
+        $totalInventoryValue = $this->calculateTotalInventoryValue($products);
+
+        return view('home', compact('products', 'totalInventoryValue'));
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection|static
+     */
+    protected function getProducts()
+    {
         $productFileNames = array_filter(scandir(storage_path('app')), function ($filename) {
             return ends_with($filename, '.json');
         });
@@ -17,7 +28,20 @@ class PagesController extends Controller
         }, $productFileNames));
 
         $products = $products->sortBy('created_at');
+        return $products;
+    }
 
-        return view('home', compact('products'));
+    /**
+     * @param $products
+     * @return float|int
+     */
+    protected function calculateTotalInventoryValue($products)
+    {
+        $totalInventoryValue = 0;
+
+        foreach ($products as $product) {
+            $totalInventoryValue += $product['quantity'] * $product['price'];
+        }
+        return $totalInventoryValue;
     }
 }

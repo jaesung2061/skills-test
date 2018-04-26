@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                    @if(count($products) > 0)
+                    @if($products->count() > 0)
                         <div class="products-container">
                             <h2 class="mb-3">Products</h2>
 
@@ -84,6 +84,11 @@
                                         <td class="text-right">${{ money_format('%i', $product['quantity'] * $product['price']) }}</td>
                                     </tr>
                                 @endforeach
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <th class="text-right">Total</th>
+                                    <td class="text-right">${{ money_format('%i', $totalInventoryValue) }}</td>
+                                </tr>
                             </table>
                         </div>
                     @endif
